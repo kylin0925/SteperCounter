@@ -12,5 +12,6 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent sensorService = new Intent(context,SensorService.class);
         context.startService(sensorService);
+        //// TODO: 2016/6/25  
     }
 }

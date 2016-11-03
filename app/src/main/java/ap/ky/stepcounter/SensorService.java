@@ -34,13 +34,17 @@ public class SensorService extends Service {
     SensorManager sensorManager;
     Sensor stepCounter;
 
-    int count=0,count5=0;
-    int step1=0,step5=0;
-    Timer timer;
+    int count=0;//,count5=0;
+    //int step1=0,step5=0;
+    //Timer timer;
 
-    SQLiteDatabase db;
+   // SQLiteDatabase db;
     SteperDB steperDB = new SteperDB(this);
-    String countInsert = "insert into data";
+    //String countInsert = "insert into data";
+
+    //final  String TABLE_DAILY = "daily";
+   // final  String TABLE_TMP = "tmp";
+
     public SensorService() {
 //
 
@@ -67,101 +71,96 @@ public class SensorService extends Service {
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
             sensorManager.registerListener(sensorEventListener, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
-            timer = new Timer();
-            timer.schedule(timerTask,0,1000);
+            //timer = new Timer();
+            //timer.schedule(timerTask,0,1000);
         }
         //return super.onStartCommand(intent, flags, startId);
-        Notification n = new Notification();
+//        Notification n = new Notification();
 
-        startForeground(123,n);
-        if(db == null){
-            db = DBHelper.getDatabase(this);
-        }
+//        startForeground(123,n);
+//        if(db == null){
+//            db = DBHelper.getDatabase(this);
+//        }
         return START_NOT_STICKY;
     }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String getDateTime(){
+//    String getDateTime(){
+//
+//        Date dt = new Date();
+//        String dts = sdf.format(dt);
+//        return dts;
+//    }
 
-        Date dt = new Date();
-        String dts = sdf.format(dt);
-        return dts;
-    }
+//    String getDateTimeDayOffset(String dts,int day){
+//        Calendar calendar = Calendar.getInstance();
+//        try {
+//            calendar.setTime(sdf.parse(dts));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        calendar.add(Calendar.DATE, day);
+//        String dts1 = sdf.format(calendar.getTime());
+//        return dts1;
+//    }
+//    void queryData(SQLiteDatabase db,String date){
+//        String dts1 = getDateTimeDayOffset(date, 1);
+//
+//        String sql = "select sum(count) from data where date >= '"+ date + "' and date<='"+dts1 + "'";
+//        Log.e(TAG, "query " + sql);
+//        Cursor c = db.rawQuery(sql, null);
+//
+//        while(c.moveToNext()){
+//            //Log.e(TAG," "+c.getInt(0) + " " + c.getString(1) + " " +c.getInt(2));
+//            Log.e(TAG,"daily count "+c.getInt(0) );
+//        }
+//    }
+//    int getSecond(){
+////        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////        Date dt = new Date();
+////        String dts = sdf.format(dt);
+////
+////        sdf = new SimpleDateFormat("ss");
+////        String sec = sdf.format(new Date());
+////        return sec;
+//        Calendar calendar = Calendar.getInstance();
+//        int second = calendar.get(Calendar.SECOND);
+//        return second;
+//    }
 
-    String getDateTimeDayOffset(String dts,int day){
-        Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(sdf.parse(dts));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        calendar.add(Calendar.DATE, day);
-        String dts1 = sdf.format(calendar.getTime());
-        return dts1;
-    }
-    void queryData(SQLiteDatabase db,String date){
-        String dts1 = getDateTimeDayOffset(date, 1);
-
-        String sql = "select sum(count) from data where date >= '"+ date + "' and date<='"+dts1 + "'";
-        Log.e(TAG, "query " + sql);
-        Cursor c = db.rawQuery(sql, null);
-
-        while(c.moveToNext()){
-            //Log.e(TAG," "+c.getInt(0) + " " + c.getString(1) + " " +c.getInt(2));
-            Log.e(TAG,"daily count "+c.getInt(0) );
-        }
-    }
-    String getSecond(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dt = new Date();
-        String dts = sdf.format(dt);
-
-        sdf = new SimpleDateFormat("ss");
-        String sec = sdf.format(new Date());
-        return sec;
-    }
-    String getMin(){
-        SimpleDateFormat sdf = sdf = new SimpleDateFormat("mm");
-        String mm = sdf.format(new Date());
-
-        return mm;
-    }
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            String sec = getSecond();
-            String dts = DateUtil.getDateTime();
-
-            if(sec.equals("00")) {
-                //Log.e(TAG,"sec " + sec);
-                step1 = count;
-                Log.e(TAG, dts + " count " + step1);
-
-                steperDB.insertData(dts, step1);
-                steperDB.queryData(dts);
-
-                count5+=step1;
-                count = 0;
-
-                String mm = getMin();
-                if(mm.substring(1,2).equals("0") ||  mm.subSequence(1,2).equals("5") ){
-                    Log.e(TAG,dts + " count5 " + count5);
-                    step5 = count5;
-                    count5 = 0;
-                }
-            }
-
-
-
-        }
-    };
+//    TimerTask timerTask = new TimerTask() {
+//        @Override
+//        public void run() {
+//            int sec = getSecond();
+//            String dts = DateUtil.getDateTime();
+//
+//            if(sec == 0) { //second is 00
+//                Log.e(TAG,"sec " + sec);
+//                step1 = count;
+//                Log.e(TAG, dts + " count " + step1);
+//
+//                steperDB.saveToTmp(dts, step1);
+//                count = 0;
+//            }
+//            //if time is 00:00:00
+//            // save to daily today -1 ex,now is 2016/1/2 00:00:00 ,
+//            // query 2016/1/1 steps,
+//            // save to daily
+//            // delete data table
+//
+//
+//        }
+//    };
     SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
 
             count ++;
-            Log.e(TAG, " " + count + " " + sensorEvent.timestamp/1000000);
+            Log.e(TAG, "SensorEventListener " + count + " " + sensorEvent.timestamp/1000000);
+            int cnt = steperDB.queryDailyStep(DateUtil.getDateTime());
+            steperDB.updateDailyStep(cnt + 1);
+
             Intent intent = new Intent("STEPCOUNT");
-            intent.putExtra("COUNT",count);
+            intent.putExtra("COUNT",cnt+1);
             sendBroadcast(intent);
         }
 
@@ -171,19 +170,19 @@ public class SensorService extends Service {
         }
     };
 
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case 1:
-                    Intent intent = new Intent("STEPCOUNT");
-                    intent.putExtra("COUNT",count);
-                    sendBroadcast(intent);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+//    Handler handler = new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what){
+//                case 1:
+//                    Intent intent = new Intent("STEPCOUNT");
+//                    intent.putExtra("COUNT",count);
+//                    sendBroadcast(intent);
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    };
 
 }

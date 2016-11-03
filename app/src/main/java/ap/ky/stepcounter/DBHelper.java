@@ -24,6 +24,19 @@ public class DBHelper extends SQLiteOpenHelper {
             "COUNT INTEGER," +
             "PRIMARY KEY(ID)" +
             ")";
+
+    String CREATE_TMP_TABLE = "CREATE TABLE tmp (" +
+            "ID INTEGER," +
+            "DATE TEXT," +
+            "COUNT INTEGER," +
+            "PRIMARY KEY(ID)" +
+            ")";
+    String CREATE_DAILY_TABLE = "CREATE TABLE daily (" +
+            "ID INTEGER," +
+            "DATE TEXT," +
+            "COUNT INTEGER," +
+            "PRIMARY KEY(ID)" +
+            ")";
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -32,6 +45,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_TABLE);
         sqLiteDatabase.execSQL(CREATE_SINGLE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_TMP_TABLE);
+        sqLiteDatabase.execSQL(CREATE_DAILY_TABLE);
     }
     public static SQLiteDatabase getDatabase(Context context) {
         if (database == null ) {

@@ -22,6 +22,8 @@ public class SteperDB {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     Context context;
+    private int todayCount;
+
     SteperDB(Context context){
         this.context = context;
     }
@@ -31,33 +33,23 @@ public class SteperDB {
         String dts = sdf.format(dt);
         return dts;
     }
-    private String getDateTimeDayOffset(String dts,int day){
-        Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(sdf.parse(dts));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        calendar.add(Calendar.DATE, day);
-        String dts1 = sdf.format(calendar.getTime());
-        return dts1;
-    }
+
     void insertTestData(SQLiteDatabase db,String date,int count){
         ContentValues cv = new ContentValues();
         cv.put("count",count);
         cv.put("date", date);
         db.insert("data", null, cv);
     }
-    void insertData(String date,int count){
-        SQLiteDatabase  db = DBHelper.getDatabase(context);
-        ContentValues cv = new ContentValues();
-        cv.put("count",count);
-        cv.put("date", date);
-        db.insert("data", null, cv);
-    }
+//    void insertData(String date,int count){
+//        SQLiteDatabase  db = DBHelper.getDatabase(context);
+//        ContentValues cv = new ContentValues();
+//        cv.put("count",count);
+//        cv.put("date", date);
+//        db.insert("data", null, cv);
+//    }
     void queryData(String date){
         SQLiteDatabase  db = DBHelper.getDatabase(context);
-        String dts1 = getDateTimeDayOffset(date,1);
+        String dts1 = DateUtil.getDateTimeDayOffset(date,1);
 
         String sql = "select sum(count) from data where date >= '"+ date + "' and date<='"+dts1 + "'";
         Log.e(TAG, "query " + sql);
@@ -74,6 +66,45 @@ public class SteperDB {
         cv.put("count",count);
         cv.put("date", date);
         db.insert("stepcount", null, cv);
+
+    }
+
+    int queryDailyStep(String date){
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        String dts1 = DateUtil.getDateTimeDayOffset(DateUtil.getFullDateTime(), 1);
+
+        String sql = "select count,date from daily where date >= '"+ date + "' and date<='"+dts1 + "'";
+        Log.e(TAG, "query " + sql);
+        Cursor c = db.rawQuery(sql, null);
+        todayCount = 0;
+        while(c.moveToNext()){
+            //Log.e(TAG," "+c.getInt(0) + " " + c.getString(1) + " " +c.getInt(2));
+            todayCount = c.getInt(0);
+            Log.e(TAG,"today count " + todayCount + "  " + c.getString(1) );
+
+        }
+        if(todayCount == 0){
+            insertDailyStep(0);
+        }
+        return todayCount;
+    }
+    void updateDailyStep(int count){
+
+        String date = getDateTime();
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        ContentValues cv = new ContentValues();
+        cv.put("count",count);
+        //cv.put("date", date);
+        Log.e(TAG, "updateDailyStep " + date + " count " + count);
+        db.update("daily", cv, "date=?" , new String[]{date});
+    }
+    void insertDailyStep(int count){
+        String date = getDateTime();
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        ContentValues cv = new ContentValues();
+        cv.put("count",count);
+        cv.put("date", date);
+        db.insert("daily", null, cv);
     }
     public class StepCount{
         int id;
@@ -82,12 +113,7 @@ public class SteperDB {
     }
     ArrayList<StepCount> arrStepCount = new ArrayList<>();
 
-    ArrayList<StepCount> queryByDate(String start,String end){
-        SQLiteDatabase  db = DBHelper.getDatabase(context);
-        String sql = "select * from stepcount where date >= '"+ start + "' and date<='"+end + "'";
-        Log.e(TAG, "query " + sql);
-        Cursor c = db.rawQuery(sql, null);
-
+    void addToStepCount(Cursor c){
         arrStepCount.clear();
         while(c.moveToNext()){
             //Log.e(TAG," "+c.getInt(0) + " " + c.getString(1) + " " +c.getInt(2));
@@ -98,16 +124,32 @@ public class SteperDB {
             tmp.count = c.getInt(2);
             arrStepCount.add(tmp);
         }
+    }
+    //query date table
+    ArrayList<StepCount> queryByDate(String start,String end){
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        String sql = "select * from stepcount where date >= '"+ start + "' and date<='"+end + "'";
+        Log.e(TAG, "queryByDate query " + sql);
+        Cursor c = db.rawQuery(sql, null);
+
+        addToStepCount(c);
         return arrStepCount;
     }
-    ArrayList<StepCount> queryStepsData(String date){
-        String dts1 = getDateTimeDayOffset(date,1);
-        return queryByDate(date,dts1);
+
+    ArrayList<StepCount> queryAllDailyData(){
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        String sql = "select * from daily";
+        Log.e(TAG, "queryByDate query " + sql);
+        Cursor c = db.rawQuery(sql, null);
+
+        addToStepCount(c);
+        return arrStepCount;
     }
     ArrayList<StepCount> queryMonthlyData(String date){
         String dts1 = DateUtil.getMonthOffset(date, 1);
         return queryByDate(date,dts1);
     }
+
     void testCalculate(){
         String dts = "2016-01-01 12:00";// getDateTime();
         String dts1 = "2016-01-02 12:00";// getDateTime();
@@ -118,5 +160,18 @@ public class SteperDB {
         insertTestData(db, dts, 3);
 
         queryData(dts);
+    }
+
+    void testDailyData(){
+        String date = getDateTime();
+        SQLiteDatabase  db = DBHelper.getDatabase(context);
+        db.delete("daily",null ,null);
+        for(int i = 1; i < 10;i++) {
+            date = DateUtil.getDateTimeDayOffset(date,0-i);
+            ContentValues cv = new ContentValues();
+            cv.put("count", 12+i);
+            cv.put("date", date);
+            db.insert("daily", null, cv);
+        }
     }
 }
