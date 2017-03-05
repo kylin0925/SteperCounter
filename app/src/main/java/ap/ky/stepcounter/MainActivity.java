@@ -1,11 +1,9 @@
 package ap.ky.stepcounter;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -39,14 +37,14 @@ public class MainActivity extends AppCompatActivity  {
     String TAG = "Stepcounter";
     SensorManager sensorManager;
     Sensor stepCounter;
-    Button btnEnable,btnDisable,btnReset;
+    Button btnEnable,btnDisable,btnReset,btnStep,btnDaily;
     TextView txtCount;
     ListView listView;
     TextView txtToday;
     StepRecv recv;
     IntentFilter intentFilter;
 
-    LinearLayout llDaily,llSingle;
+    LinearLayout llDaily,llSingle,llHistory;
     DrawerLayout drawerLayout;
 
     SteperDB steperDB = new SteperDB(this);
@@ -62,9 +60,12 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         txtCount = (TextView)findViewById(R.id.txtCount);
+        int cnt = steperDB.queryDailyStep(DateUtil.getDateTime());
+        txtCount.setText(txtCount.toString());
         btnEnable = (Button)findViewById(R.id.btnEnable);
         btnDisable = (Button)findViewById(R.id.btnDisable);
         btnReset = (Button)findViewById(R.id.btnReset);
+        btnStep = (Button)findViewById(R.id.btnStep);
         listView = (ListView)findViewById(R.id.listView);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
@@ -91,12 +92,7 @@ public class MainActivity extends AppCompatActivity  {
 
                 steperDB.inserStepstData(DateUtil.getFullDateTime(), count);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listData(getCountData());
-                    }
-                });
+
                 btnEnable.setEnabled(true);
                 btnDisable.setEnabled(false);
             }
@@ -115,13 +111,13 @@ public class MainActivity extends AppCompatActivity  {
         recv = new StepRecv();
 
 
-        listData(getCountData());
+        //listData(getCountData());
         //int todaySteps = steperDB.getTodayCount();
         txtToday = (TextView)findViewById(R.id.txtToday);
         //txtToday.setText("Today :" + todaySteps);
 
-        Button btnDebug = (Button)findViewById(R.id.btnDebug);
-        btnDebug.setOnClickListener(new View.OnClickListener() {
+        btnDaily = (Button)findViewById(R.id.btnDaily);
+        btnDaily.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SQLiteDatabase  db = DBHelper.getDatabase(getApplicationContext());
@@ -130,7 +126,17 @@ public class MainActivity extends AppCompatActivity  {
                 listData(data);
             }
         });
-
+        btnStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listData(getCountData());
+                    }
+                });
+            }
+        });
         //test
         //steperDB.testDailyData();
 
@@ -164,6 +170,8 @@ public class MainActivity extends AppCompatActivity  {
 
         llDaily = (LinearLayout)findViewById(R.id.llDaily);
         llSingle = (LinearLayout)findViewById(R.id.llSingle);
+        llHistory = (LinearLayout)findViewById(R.id.history);
+        llHistory.setVisibility(View.GONE);
         lstDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -171,9 +179,15 @@ public class MainActivity extends AppCompatActivity  {
                 if(i==0){
                     llDaily.setVisibility(View.VISIBLE);
                     llSingle.setVisibility(View.GONE);
+                    llHistory.setVisibility(View.GONE);
                 }else if(i==1){
                     llDaily.setVisibility(View.GONE);
                     llSingle.setVisibility(View.VISIBLE);
+                    llHistory.setVisibility(View.GONE);
+                }else if(i==2){
+                    llDaily.setVisibility(View.GONE);
+                    llSingle.setVisibility(View.GONE);
+                    llHistory.setVisibility(View.VISIBLE);
                 }
                 drawerLayout.closeDrawers();
             }

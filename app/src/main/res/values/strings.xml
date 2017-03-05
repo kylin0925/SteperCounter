@@ -6,4 +6,7 @@
     <string name="daily_steps">Daily steps</string>
     <string name="open">open</string>
     <string name="close">close</string>
+    <string name="history">history</string>
+    <string name="new_activity">Start New Activity</string>
+
 </resources>

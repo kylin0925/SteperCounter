@@ -35,11 +35,7 @@
             android:textSize="120dp"
             android:gravity="center" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ListDaily"
-            android:id="@+id/btnDebug" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -76,36 +72,58 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/btnEnable"
-            android:background="@mipmap/button_start" />
+            android:text="Enable"
+             />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnDisable"
             android:textSize="28dp"
-            android:background="@mipmap/button_stop" />
+            android:text="Disable"
+             />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnReset"
-            android:background="@mipmap/button_reset"
+            android:text="Reset"
             android:textSize="28dp"
             />
     </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/history"
+        android:orientation="vertical"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List Daily"
+            android:id="@+id/btnDaily" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List Events"
+            android:id="@+id/btnStep" />
+        <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listView" />
+
+    </LinearLayout>
+
     <ListView
-        android:layout_width="fill_parent"
+
+        android:id="@+id/listView2"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:id="@+id/listView" />
-
-</LinearLayout>
-<ListView
-
-    android:id="@+id/listView2"
-    android:layout_width="240dp"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
-    android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="0dp"
-    android:background="#111" />
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#111" />
 </android.support.v4.widget.DrawerLayout>

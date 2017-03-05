@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="drawer_menu">
-        <item>Daily</item>
-        <item>Start New Activity</item>
+        <item>@string/daily_steps</item>
+        <item>@string/new_activity</item>
+        <item>@string/history</item>
     </string-array>
 
 </resources>
