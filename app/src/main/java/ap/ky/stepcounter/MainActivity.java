@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -38,6 +39,10 @@ public class MainActivity extends AppCompatActivity  {
     SensorManager sensorManager;
     Sensor stepCounter;
     Button btnEnable,btnDisable,btnReset,btnStep,btnDaily;
+    ImageButton imgBtnStart;
+    ImageButton imgBtnPause;
+    ImageButton imgBtnReset;
+
     TextView txtCount;
     ListView listView;
     TextView txtToday;
@@ -49,6 +54,16 @@ public class MainActivity extends AppCompatActivity  {
 
     SteperDB steperDB = new SteperDB(this);
     int count = 0;
+
+    int drawerSelect = 0;
+    static String DRAWER="DRAWER";
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(DRAWER,drawerSelect);
+        Log.e(TAG,"onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +75,15 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         txtCount = (TextView)findViewById(R.id.txtCount);
-        int cnt = steperDB.queryDailyStep(DateUtil.getDateTime());
-        txtCount.setText(txtCount.toString());
+        //int cnt = steperDB.queryDailyStep(DateUtil.getDateTime());
+        //txtCount.setText(String.valueOf(cnt));
         btnEnable = (Button)findViewById(R.id.btnEnable);
         btnDisable = (Button)findViewById(R.id.btnDisable);
+
+        imgBtnStart = (ImageButton)findViewById(R.id.imgBtnStart);
+        imgBtnPause = (ImageButton)findViewById(R.id.imgBtnPause);
+
+
         btnReset = (Button)findViewById(R.id.btnReset);
         btnStep = (Button)findViewById(R.id.btnStep);
         listView = (ListView)findViewById(R.id.listView);
@@ -72,11 +92,9 @@ public class MainActivity extends AppCompatActivity  {
       //  sensorManager.registerListener(sensorEventListener, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
 
         btnDisable.setEnabled(false);
-
-        btnEnable.setOnClickListener(new View.OnClickListener() {
+        imgBtnStart.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View v) {
                 sensorManager.registerListener(sensorEventListener, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
 
                 btnEnable.setEnabled(false);
@@ -84,10 +102,9 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        btnDisable.setOnClickListener(new View.OnClickListener() {
+        imgBtnPause.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View v) {
                 sensorManager.unregisterListener(sensorEventListener);
 
                 steperDB.inserStepstData(DateUtil.getFullDateTime(), count);
@@ -97,10 +114,35 @@ public class MainActivity extends AppCompatActivity  {
                 btnDisable.setEnabled(false);
             }
         });
+//        btnEnable.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                sensorManager.registerListener(sensorEventListener, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+//
+//                btnEnable.setEnabled(false);
+//                btnDisable.setEnabled(true);
+//            }
+//        });
+//
+//        btnDisable.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                sensorManager.unregisterListener(sensorEventListener);
+//
+//                steperDB.inserStepstData(DateUtil.getFullDateTime(), count);
+//
+//
+//                btnEnable.setEnabled(true);
+//                btnDisable.setEnabled(false);
+//            }
+//        });
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 count = 0;
+                txtCount.setText("0");
             }
         });
         Intent sensorService = new Intent(this,SensorService.class);
@@ -189,9 +231,27 @@ public class MainActivity extends AppCompatActivity  {
                     llSingle.setVisibility(View.GONE);
                     llHistory.setVisibility(View.VISIBLE);
                 }
+                drawerSelect = i;
                 drawerLayout.closeDrawers();
             }
         });
+        if(savedInstanceState!=null){
+            drawerSelect = savedInstanceState.getInt(DRAWER);
+            if(drawerSelect==0){
+                llDaily.setVisibility(View.VISIBLE);
+                llSingle.setVisibility(View.GONE);
+                llHistory.setVisibility(View.GONE);
+            }else if(drawerSelect==1){
+                llDaily.setVisibility(View.GONE);
+                llSingle.setVisibility(View.VISIBLE);
+                llHistory.setVisibility(View.GONE);
+            }else if(drawerSelect==2){
+                llDaily.setVisibility(View.GONE);
+                llSingle.setVisibility(View.GONE);
+                llHistory.setVisibility(View.VISIBLE);
+            }
+
+        }
     }
     ArrayList<SteperDB.StepCount> getCountData(){
         SQLiteDatabase  db = DBHelper.getDatabase(getApplicationContext());
@@ -200,21 +260,21 @@ public class MainActivity extends AppCompatActivity  {
     }
     void listData(ArrayList<SteperDB.StepCount> data){
 
-        List<Map<String, Object>> items = new ArrayList<Map<String,Object>>();
-        for (int i = 0; i < data.size(); i++) {
-            Map<String, Object> item = new HashMap<String, Object>();
-            item.put("txtDate", data.get(i).date);
-            item.put("txtStep", Integer.toString(data.get(i).count));
-            items.add(item);
-            Log.e(TAG,"count " + Integer.toString(data.get(i).count));
-        }
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
-                items,
-                R.layout.list_item,
-                new String[]{"txtDate","txtStep"},
-                new int[]{R.id.txtDate,R.id.txtSteps});
-
-        listView.setAdapter(simpleAdapter);
+//        List<Map<String, Object>> items = new ArrayList<Map<String,Object>>();
+//        for (int i = 0; i < data.size(); i++) {
+//            Map<String, Object> item = new HashMap<String, Object>();
+//            item.put("txtDate", data.get(i).date);
+//            item.put("txtStep", Integer.toString(data.get(i).count));
+//            items.add(item);
+//            Log.e(TAG,"count " + Integer.toString(data.get(i).count));
+//        }
+//        SimpleAdapter simpleAdapter = new SimpleAdapter(this,
+//                items,
+//                R.layout.list_item,
+//                new String[]{"txtDate","txtStep"},
+//                new int[]{R.id.txtDate,R.id.txtSteps});
+        DataAdapter dataAdapter = new DataAdapter(this,data);
+        listView.setAdapter(dataAdapter);
 
         String m1 = DateUtil.getMonth();
         Log.e(TAG, "month of day " + m1 + " " + DateUtil.getMonthOffset(m1, 1));

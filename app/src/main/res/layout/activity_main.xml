@@ -73,15 +73,25 @@
             android:layout_height="match_parent"
             android:id="@+id/btnEnable"
             android:text="Enable"
-             />
+            android:visibility="gone" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnDisable"
             android:textSize="28dp"
-            android:text="Disable"
-             />
+            android:text="Pause"
+            android:visibility="gone" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgBtnStart"
+            android:src="@android:drawable/ic_media_play" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgBtnPause"
+            android:src="@android:drawable/ic_media_pause" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,6 +99,8 @@
             android:text="Reset"
             android:textSize="28dp"
             />
+
+
     </LinearLayout>
 
 
