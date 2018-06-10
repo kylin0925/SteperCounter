@@ -23,6 +23,10 @@ android:
     #- sys-img-armeabi-v7a-android-26
     #- sys-img-armeabi-v7a-android-17
     - extra-android-support
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 before_install:
   - yes | sdkmanager 'platforms;android-23'    
 script:
