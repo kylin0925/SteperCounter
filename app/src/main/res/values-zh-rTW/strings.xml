@@ -4,4 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="daily_steps">每日步數</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="history">history</string>
+    <string name="new_activity">Start New Activity</string>
 </resources>
