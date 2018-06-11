@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +73,10 @@ public class MainActivity extends AppCompatActivity  {
        // getActionBar().setHomeButtonEnabled(true);
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.menu_main);
+        setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -185,19 +191,19 @@ public class MainActivity extends AppCompatActivity  {
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.mipmap.drawer_shadow, Gravity.START);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,
-                drawerLayout,
+                drawerLayout,toolbar,
                 R.string.open,
                 R.string.close){
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("");
+                //getSupportActionBar().setTitle("");
                 Log.e(TAG,"onDrawerOpened");
             }
             public void onDrawerClosed(View view)
             {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle("Close");
+                //getSupportActionBar().setTitle("Close");
 //				invalidateOptionsMenu(); // creates call to
                 // onPrepareOptionsMenu()
                 Log.e(TAG,"onDrawerClosed");
@@ -295,7 +301,7 @@ public class MainActivity extends AppCompatActivity  {
 
         }
     };
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -315,7 +321,7 @@ public class MainActivity extends AppCompatActivity  {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
     boolean isResume = false;
     @Override
     protected void onResume() {
