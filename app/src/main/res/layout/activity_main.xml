@@ -20,6 +20,12 @@
         android:background="@android:color/holo_blue_dark"
         android:minHeight="?attr/actionBarSize" />
 
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
     <LinearLayout
         android:id="@+id/llDaily"
         android:layout_width="fill_parent"
