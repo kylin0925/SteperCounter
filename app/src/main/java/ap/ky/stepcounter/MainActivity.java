@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity  {
 
     int drawerSelect = 0;
     static String DRAWER="DRAWER";
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    DailySetpFragment dailySetpFragment;
+    SingleStepFragment singleStepFragment;
+    HistoryFragment historyFragment;
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(DRAWER,drawerSelect);
@@ -102,10 +107,9 @@ public class MainActivity extends AppCompatActivity  {
         actionBarDrawerToggle.syncState();
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        DailySetpFragment dailySetpFragment = new DailySetpFragment();
-        SingleStepFragment singleStepFragment = new SingleStepFragment();
-        final HistoryFragment historyFragment = new HistoryFragment();
+        dailySetpFragment = new DailySetpFragment();
+        singleStepFragment = new SingleStepFragment();
+        historyFragment = new HistoryFragment();
 
         lstDrawer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
