@@ -25,6 +25,7 @@ public class DailySetpFragment extends Fragment {
     TextView txtToday;
     StepRecv recv;
     IntentFilter intentFilter;
+    int count = 0 ;
     public DailySetpFragment() {
         // Required empty public constructor
     }
@@ -37,6 +38,7 @@ public class DailySetpFragment extends Fragment {
         layoutInflater = inflater.inflate(R.layout.fragment_daily_setp, container, false);
         txtToday = (TextView)layoutInflater.findViewById(R.id.txtToday);
         recv = new StepRecv();
+        Log.e(TAG,"onCreateView");
         return layoutInflater;
     }
 
@@ -45,19 +47,22 @@ public class DailySetpFragment extends Fragment {
         super.onResume();
         intentFilter = new IntentFilter("STEPCOUNT");
         getActivity().registerReceiver(recv,intentFilter);
+        Log.e(TAG,"onResume");
+        txtToday.setText(Integer.toString(count));
     }
 
     @Override
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(recv);
+        Log.e(TAG,"onPause");
     }
 
     class StepRecv extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            int count = intent.getIntExtra("COUNT", 0);
+            count = intent.getIntExtra("COUNT", 0);
             Log.e(TAG,"action " + action + " count " + count);
             txtToday.setText(Integer.toString(count));
         }
