@@ -10,19 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btnDaily"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="List Daily" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnStep"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="List Events" />
+            <Button
+                android:id="@+id/btnDaily"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
 
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="List Daily" />
+
+            <Button
+                android:id="@+id/btnStep"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="List Events" />
+        </LinearLayout>
         <ListView
             android:id="@+id/listView"
             android:layout_width="fill_parent"
